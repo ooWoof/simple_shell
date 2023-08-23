@@ -21,7 +21,8 @@ int _is_delim(char c)
 {
     char delim[] = " \t\n;";
 
-    for (size_t i = 0; i < sizeof(delim); i++)
+	size_t i;
+    for (i = 0; i < sizeof(delim); i++)
     {
         if (c == delim[i])
             return 1;

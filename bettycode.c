@@ -18,7 +18,7 @@ int main(void)
 
 	for (i = 0; i < 5; i++)
 	{
-	printf("Enter marks ", i + 1);
+	printf("Enter %d", i + 1);
 	scanf("%d", &marks[i]);
 	sum += marks[i];
 	}
