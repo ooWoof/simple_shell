@@ -14,58 +14,45 @@
 
 int main(void)
 {
-	char *cmd = NULL;
-	/*char *delim = " \n";*/
+	char *cmd = NULL, prompt[] = "$ ";
 	size_t n = 0;
-	/*pid_t pid;*/
-	int i = 0;
-	/*char *argv = NULL;*/
+	pid_t pid;
+	ssize_t bytes = 0;
+	/*struct stat statbuf;*/
+	int status;
+	char *argv[] = {NULL};
 
-	printf("$ ");
+	/*print prompt on terminal with the $ sign*/
+	write(STDOUT_FILENO, prompt, sizeof(prompt) - 1);
 
 	/*read from stdin*/
 	if (getline(&cmd, &n, stdin) == -1)
-		return (-1);
-	printf("input%ld\n", strlen(cmd));
-	
-	printf("%c", cmd[i]);
-	i++;
-	free(cmd);
-	return (0);
-}
-/*
- * execute_command - this program executes command using execve
- * @-l: argument
- *
- * Return: Always 0 (success)
- */
+	{
+	perror("Error (getline)");
+	free(cmd);/* free memory if it fails*/
+	exit(EXIT_SUCCESS);
+	}
+	/*replace newline character with null terminator*/
+	if (bytes == -1)
+	perror("Error");
+	if (cmd[bytes - 1] == '\n')
+	cmd[bytes - 1] = '\0';
 
-int execute_command(char *argv, NULL)
-{
-	char *argv[] = -1;
-	pid_t pid;
-	/*program execution, set path*/
-	char *argv[] = {"/bin/ls", -l, NULL}
-
-	/*declare int variable*/
-	int val = execve(argv[0], argv, NULL);
-
-	/*call fork*/
+	/*call fork and create a child process*/
 	pid = fork();
 	if (pid == -1)
-	return (-1);
-
-	if (pid == 0) /*child pid*/
 	{
-	int val = execve(argv[0], argv, NULL);
-
-	if (val == -1)
-		perror("Error");
+	perror("Error (fork)");
+	exit(EXIT_SUCCESS);
 	}
-	else
+	if (pid == 0)/*child process*/
+	execve(cmd, argv, NULL);
+
+	/*parent process to wait*/
+	if (waitpid(pid, &status, 0) == -1)
 	{
-	wait(NULL);/*parent process*/
-	printf("end of execve\n");
+	perror("Error (wait)");
+	exit(EXIT_SUCCESS);
+	}
 	return (0);
-	}
 }
