@@ -47,12 +47,13 @@ int main(void)
 	}
 	if (pid == 0)/*child process*/
 	execve(cmd, argv, NULL);
-
+	
 	/*parent process to wait*/
 	if (waitpid(pid, &status, 0) == -1)
 	{
 	perror("Error (wait)");
 	exit(EXIT_SUCCESS);
 	}
+
 	return (0);
 }
